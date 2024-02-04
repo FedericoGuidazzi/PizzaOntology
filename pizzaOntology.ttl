@@ -1,0 +1,602 @@
+@prefix : <http://www.semanticweb.org/federico/ontologies/2024/1/pizza/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix deseases: <http://purl.bioontology.org/ontology/ICD10CM/> .
+@base <http://www.semanticweb.org/federico/ontologies/2024/1/pizza/> .
+
+<http://www.semanticweb.org/federico/ontologies/2024/1/pizza> rdf:type owl:Ontology ;
+                                                               owl:imports <http://www.ontologydesignpatterns.org/cp/owl/list.owl> .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza#hasIntollerance
+:hasIntollerance rdf:type owl:ObjectProperty ;
+                 rdfs:domain :User ;
+                 rdfs:range :Intolerances .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza#hasPanificationProcess
+:hasPanificationProcess rdf:type owl:ObjectProperty ;
+                        rdfs:subPropertyOf owl:topObjectProperty ;
+                        rdfs:domain :Pizza ;
+                        rdfs:range :PanificationProcess .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza#likesPizza
+:likesPizza rdf:type owl:ObjectProperty ;
+            rdfs:domain :User ;
+            rdfs:range :Pizza ;
+            owl:propertyChainAxiom ( :likesIngredient
+                                     :isInPizza
+                                   ) .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/chickenBBQPizzaHasIngredients
+:chickenBBQPizzaHasIngredients rdf:type owl:ObjectProperty ;
+                               rdfs:subPropertyOf :hasIngredients ;
+                               rdfs:domain :Pizza ;
+                               rdfs:range [ rdf:type owl:Class ;
+                                            owl:oneOf ( :BBQ
+                                                        :Chicken
+                                                        :Mozzarella
+                                                        :TomatoSouce
+                                                      )
+                                          ] ;
+                               rdfs:comment "Propriety that associate a chickeBBQPizza with its ingredients"@en ;
+                               rdfs:label "chickenBBQPizzaHasIngredients"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/hamPizzaHasIngredients
+:hamPizzaHasIngredients rdf:type owl:ObjectProperty ;
+                        rdfs:subPropertyOf :hasIngredients ;
+                        rdfs:domain :Pizza ;
+                        rdfs:range [ rdf:type owl:Class ;
+                                     owl:oneOf ( :Ham
+                                                 :Mozzarella
+                                                 :TomatoSouce
+                                               )
+                                   ] ;
+                        rdfs:comment "Propriety that associate a hamPizza with its ingredients"@en ;
+                        rdfs:label "hamPizzaHasIngredients"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/hasEmployee
+:hasEmployee rdf:type owl:ObjectProperty ;
+             rdfs:subPropertyOf owl:topObjectProperty ;
+             owl:inverseOf :works ;
+             rdfs:domain :Pizzeria ;
+             rdfs:range :PizzaMaker ;
+             rdfs:comment "Propriety that associate a worplace with its employees"@en ;
+             rdfs:label "hasEmployee"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/hasIngredients
+:hasIngredients rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf owl:topObjectProperty ;
+                owl:inverseOf :isInPizza ;
+                rdfs:domain :Pizza ;
+                rdfs:range :Ingredients .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/hasType
+:hasType rdf:type owl:ObjectProperty ;
+         rdfs:subPropertyOf owl:topObjectProperty ;
+         rdfs:domain :Pizza ;
+         rdfs:range :PizzaType ;
+         rdfs:comment "Propriety that associate a Pizza with its Type"@en ;
+         rdfs:label "hasType"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/isInPizza
+:isInPizza rdf:type owl:ObjectProperty ;
+           rdfs:subPropertyOf owl:topObjectProperty ;
+           rdfs:domain :Ingredients ;
+           rdfs:range :Pizza .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/likesIngredient
+:likesIngredient rdf:type owl:ObjectProperty ;
+                 rdfs:subPropertyOf owl:topObjectProperty ;
+                 rdf:type owl:TransitiveProperty ;
+                 rdfs:domain :User ;
+                 rdfs:range :Ingredients .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/makes
+:makes rdf:type owl:ObjectProperty ;
+       rdfs:subPropertyOf owl:topObjectProperty ;
+       rdfs:domain :Pizzeria ;
+       rdfs:range :Pizza .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/pepperoniPizzaHasIngredients
+:pepperoniPizzaHasIngredients rdf:type owl:ObjectProperty ;
+                              rdfs:subPropertyOf :hasIngredients ;
+                              rdfs:domain :Pizza ;
+                              rdfs:range [ rdf:type owl:Class ;
+                                           owl:oneOf ( :Mozzarella
+                                                       :Pepperoni
+                                                       :TomatoSouce
+                                                     )
+                                         ] ;
+                              rdfs:comment "Propriety that associate a pepperoniPizza with its ingredients"@en ;
+                              rdfs:label "pepperoniPizzaHasIngredients"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/pizzeriaMakesPizzaWithType
+:pizzeriaMakesPizzaWithType rdf:type owl:ObjectProperty ;
+                            rdfs:subPropertyOf owl:topObjectProperty ;
+                            rdfs:domain :Pizzeria ;
+                            rdfs:range :PizzaType ;
+                            owl:propertyChainAxiom ( :makes
+                                                     :hasType
+                                                   ) .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/works
+:works rdf:type owl:ObjectProperty ;
+       rdfs:subPropertyOf owl:topObjectProperty ;
+       rdf:type owl:FunctionalProperty ;
+       rdfs:domain :PizzaMaker ;
+       rdfs:range :Pizzeria ;
+       rdfs:comment "Propriety that associate an employee with his workplace"@en ;
+       rdfs:label "works"@en .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  https://w3id.org/MON/person.owl#birthDate
+<https://w3id.org/MON/person.owl#birthDate> rdf:type owl:DatatypeProperty ;
+                                            rdfs:subPropertyOf owl:topDataProperty ;
+                                            rdfs:domain <https://w3id.org/MON/person.owl#Person> ;
+                                            rdfs:range xsd:dateTime .
+
+
+###  https://w3id.org/MON/person.owl#firstName
+<https://w3id.org/MON/person.owl#firstName> rdf:type owl:DatatypeProperty ;
+                                            rdfs:subPropertyOf owl:topDataProperty ;
+                                            rdfs:domain <https://w3id.org/MON/person.owl#Person> ;
+                                            rdfs:range xsd:string .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://purl.bioontology.org/ontology/ICD10CM/E73
+deseases:E73 rdf:type owl:Class ;
+             owl:equivalentClass :LactoseIntollerance ;
+             rdfs:subClassOf :Intolerances ;
+             rdfs:comment "Lactose intolerance is caused by a lessened ability or a complete inability to digest lactose, a sugar found in dairy products."@en ;
+             rdfs:label "E73"@en .
+
+
+###  http://purl.bioontology.org/ontology/ICD10CM/K90.0
+deseases:K90.0 rdf:type owl:Class ;
+               owl:equivalentClass :CeliacDisease ;
+               rdfs:subClassOf :Intolerances ;
+               rdfs:comment "Celiac disease is an illness caused by an immune reaction to eating gluten."@en ;
+               rdfs:label "K90.0"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/BigPizzeria
+:BigPizzeria rdf:type owl:Class ;
+             owl:equivalentClass [ owl:intersectionOf ( :Pizzeria
+                                                        [ rdf:type owl:Restriction ;
+                                                          owl:onProperty :hasEmployee ;
+                                                          owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
+                                                          owl:onClass :PizzaMaker
+                                                        ]
+                                                      ) ;
+                                   rdf:type owl:Class
+                                 ] ;
+             rdfs:subClassOf :Pizzeria ;
+             rdfs:comment "A Pizzeria with many Employees"@en ;
+             rdfs:label "BigPizzeria"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/CeliacDisease
+:CeliacDisease rdf:type owl:Class ;
+               rdfs:subClassOf :Intolerances ;
+               rdfs:comment "Celiac disease is an illness caused by an immune reaction to eating gluten."@en ;
+               rdfs:label "CeliacDisease"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Chicken
+:Chicken rdf:type owl:Class ;
+         rdfs:subClassOf :Meat .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/ChickenBBQPizza
+:ChickenBBQPizza rdf:type owl:Class ;
+                 owl:equivalentClass [ rdf:type owl:Restriction ;
+                                       owl:onProperty :chickenBBQPizzaHasIngredients ;
+                                       owl:qualifiedCardinality "4"^^xsd:nonNegativeInteger ;
+                                       owl:onClass :Ingredients
+                                     ] ;
+                 rdfs:subClassOf :PizzaWithIngredients .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/CookingProcess
+:CookingProcess rdf:type owl:Class ;
+                rdfs:subClassOf :StepClass ;
+                rdfs:comment "A step to make a pizza dough, in which the dough is cooked."@en ;
+                rdfs:label "CookingProcess"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/DairyProducts
+:DairyProducts rdf:type owl:Class ;
+               rdfs:subClassOf :Ingredients ;
+               rdfs:comment "A set of product made of milk"@en ,
+                            "DairyProducts"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Fermentation
+:Fermentation rdf:type owl:Class ;
+              rdfs:subClassOf :StepClass ;
+              rdfs:comment "A step to make a pizza dough, in wich the dough ferments."@en ;
+              rdfs:label "Fermentation"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/HamPizza
+:HamPizza rdf:type owl:Class ;
+          owl:equivalentClass [ rdf:type owl:Restriction ;
+                                owl:onProperty :hamPizzaHasIngredients ;
+                                owl:qualifiedCardinality "3"^^xsd:nonNegativeInteger ;
+                                owl:onClass :Ingredients
+                              ] ;
+          rdfs:subClassOf :PizzaWithIngredients .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Ingredients
+:Ingredients rdf:type owl:Class ;
+             rdfs:comment "A set of elements to put on the pizza"@en ;
+             rdfs:label "Ingredients"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Intolerances
+:Intolerances rdf:type owl:Class ;
+              rdfs:comment "A set of deseases."@en ;
+              rdfs:label "Intollerances"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/KneadingPhase
+:KneadingPhase rdf:type owl:Class ;
+               rdfs:subClassOf :StepClass ;
+               rdfs:comment "A step to make a pizza dough, in wich the dough is worked to form a smooth and cohesive mass."@en ;
+               rdfs:label "KneadingPhase"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/LactoseIntollerance
+:LactoseIntollerance rdf:type owl:Class ;
+                     rdfs:subClassOf :Intolerances ;
+                     rdfs:comment "Lactose intolerance is caused by a lessened ability or a complete inability to digest lactose, a sugar found in dairy products."@en ;
+                     rdfs:label "LactoseIntollerance"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Meat
+:Meat rdf:type owl:Class ;
+      rdfs:subClassOf :Ingredients ;
+      rdfs:comment "A set of ingredients of animal origin"@en ;
+      rdfs:label "Meat"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/PanificationProcess
+:PanificationProcess rdf:type owl:Class ;
+                     rdfs:subClassOf <http://www.ontologydesignpatterns.org/cp/owl/list.owl#List> ;
+                     rdfs:comment "The process to make dough."@en ;
+                     rdfs:label "PanificationProcess"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/PepperoniPizza
+:PepperoniPizza rdf:type owl:Class ;
+                owl:equivalentClass [ rdf:type owl:Restriction ;
+                                      owl:onProperty :pepperoniPizzaHasIngredients ;
+                                      owl:qualifiedCardinality "3"^^xsd:nonNegativeInteger ;
+                                      owl:onClass :Ingredients
+                                    ] ;
+                rdfs:subClassOf :PizzaWithIngredients .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Pizza
+:Pizza rdf:type owl:Class ;
+       rdfs:comment "Famous italian dish"@en ;
+       rdfs:label "Pizza"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/PizzaMaker
+:PizzaMaker rdf:type owl:Class ;
+            owl:equivalentClass [ rdf:type owl:Restriction ;
+                                  owl:onProperty :works ;
+                                  owl:someValuesFrom :Pizzeria
+                                ] ;
+            rdfs:subClassOf <https://w3id.org/MON/person.owl#Person> ;
+            rdfs:comment "A person thats work is to make Pizza"@en ;
+            rdfs:label "PizzaMaker"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/PizzaType
+:PizzaType rdf:type owl:Class ;
+           rdfs:comment "Represent pizzas type"@en ;
+           rdfs:label "PizzaType"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/PizzaWithIngredients
+:PizzaWithIngredients rdf:type owl:Class ;
+                      owl:equivalentClass [ owl:intersectionOf ( :Pizza
+                                                                 [ rdf:type owl:Restriction ;
+                                                                   owl:onProperty :hasIngredients ;
+                                                                   owl:someValuesFrom :Ingredients
+                                                                 ]
+                                                               ) ;
+                                            rdf:type owl:Class
+                                          ] ;
+                      rdfs:subClassOf :Pizza ;
+                      rdfs:comment "A pizza with at least one ingredient"@en ;
+                      rdfs:label "PizzaWithIngredients"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Pizzeria
+:Pizzeria rdf:type owl:Class ;
+          rdfs:comment "A place where it is possible to buy a Pizza"@en ;
+          rdfs:label "Pizzeria"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Shaping
+:Shaping rdf:type owl:Class ;
+         rdfs:subClassOf :StepClass ;
+         rdfs:comment "A step to make a pizza dough, in wich the dough is shaped."@en ;
+         rdfs:label "Shaping"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Step
+:Step rdf:type owl:Class ;
+      rdfs:subClassOf <http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem> ;
+      rdfs:comment "An element of the collection of steps to make a pizza dough"@en ;
+      rdfs:label "Step"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/StepClass
+:StepClass rdf:type owl:Class ;
+           owl:disjointUnionOf ( :CookingProcess
+                                 :Fermentation
+                                 :KneadingPhase
+                                 :Shaping
+                               ) ;
+           rdfs:comment "A step to make a pizza dough"@en ;
+           rdfs:label "StepClass"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Suine
+:Suine rdf:type owl:Class ;
+       rdfs:subClassOf :Meat ;
+       rdfs:comment "Suine"@en ;
+       rdfs:label "Suine"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/User
+:User rdf:type owl:Class ;
+      rdfs:subClassOf <https://w3id.org/MON/person.owl#Person> ;
+      rdfs:comment "A person that wants to buy a Pizza"@en ;
+      rdfs:label "User"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Vegetables
+:Vegetables rdf:type owl:Class ;
+            rdfs:subClassOf :Ingredients ;
+            rdfs:comment "Vegetables"@en ;
+            rdfs:label "Vegetables"@en .
+
+
+###  https://w3id.org/MON/person.owl#Person
+<https://w3id.org/MON/person.owl#Person> rdf:type owl:Class ;
+                                         rdfs:comment "a Human beeing"@en ;
+                                         rdfs:label "Person"@en .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza#Celiac
+:Celiac rdf:type owl:NamedIndividual ,
+                 :CeliacDisease .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza#ChickenBBQPizzaSliced
+:ChickenBBQPizzaSliced rdf:type owl:NamedIndividual ;
+                       :chickenBBQPizzaHasIngredients :BBQ ,
+                                                      :Chicken ,
+                                                      :Mozzarella ,
+                                                      :TomatoSouce ;
+                       :hasType :Sliced .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza#CookingProcessChickenPizza
+:CookingProcessChickenPizza rdf:type owl:NamedIndividual ,
+                                     :CookingProcess .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza#FermentationChickenPizza
+:FermentationChickenPizza rdf:type owl:NamedIndividual ,
+                                   :Fermentation .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza#KneadingProcessChickenPizza
+:KneadingProcessChickenPizza rdf:type owl:NamedIndividual ,
+                                      :KneadingPhase .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza#PanificationProcessChickenPizza
+:PanificationProcessChickenPizza rdf:type owl:NamedIndividual ,
+                                          :PanificationProcess ;
+                                 <http://www.ontologydesignpatterns.org/cp/owl/bag.owl#hasItem> :Step1PanificationProcessChickenPizza ,
+                                                                                                :Step2PanificationProcessChickenPizza ,
+                                                                                                :Step3PanificationProcessChickenPizza ,
+                                                                                                :Step4PanificationProcessChickenPizza ;
+                                 <http://www.ontologydesignpatterns.org/cp/owl/list.owl#hasFirstItem> :Step1PanificationProcessChickenPizza ;
+                                 <http://www.ontologydesignpatterns.org/cp/owl/list.owl#hasLastItem> :Step4PanificationProcessChickenPizza .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza#ShapingChickenPizza
+:ShapingChickenPizza rdf:type owl:NamedIndividual ,
+                              :Shaping .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza#Sliced
+:Sliced rdf:type owl:NamedIndividual ,
+                 :PizzaType .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza#Step1PanificationProcessChickenPizza
+:Step1PanificationProcessChickenPizza rdf:type owl:NamedIndividual ,
+                                               :Step ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemContent> :KneadingProcessChickenPizza ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#directlyPrecedes> :Step2PanificationProcessChickenPizza .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza#Step2PanificationProcessChickenPizza
+:Step2PanificationProcessChickenPizza rdf:type owl:NamedIndividual ,
+                                               :Step ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemContent> :ShapingChickenPizza .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza#Step3PanificationProcessChickenPizza
+:Step3PanificationProcessChickenPizza rdf:type owl:NamedIndividual ,
+                                               :Step ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemContent> :FermentationChickenPizza ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#directlyFollows> :Step2PanificationProcessChickenPizza .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza#Step4PanificationProcessChickenPizza
+:Step4PanificationProcessChickenPizza rdf:type owl:NamedIndividual ,
+                                               :Step ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemContent> :CookingProcessChickenPizza ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#directlyFollows> :Step3PanificationProcessChickenPizza .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/BBQ
+:BBQ rdf:type owl:NamedIndividual ,
+              :Ingredients .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Chicken
+:Chicken rdf:type owl:NamedIndividual ,
+                  :Chicken .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Filippo
+:Filippo rdf:type owl:NamedIndividual ,
+                  :User ;
+         :hasIntollerance :Celiac ;
+         :likesIngredient :Chicken .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Ham
+:Ham rdf:type owl:NamedIndividual ,
+              :Suine .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/HamPizza
+:HamPizza rdf:type owl:NamedIndividual ;
+          :hamPizzaHasIngredients :Ham ,
+                                  :Mozzarella ,
+                                  :TomatoSouce .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Luca
+:Luca rdf:type owl:NamedIndividual ,
+               <https://w3id.org/MON/person.owl#Person> ;
+      :works :MarioPizzas .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/MarioPizzas
+:MarioPizzas rdf:type owl:NamedIndividual ,
+                      :Pizzeria ;
+             :hasEmployee :Luca ;
+             :makes :ChickenBBQPizzaSliced .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Mozzarella
+:Mozzarella rdf:type owl:NamedIndividual ,
+                     :DairyProducts .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Pepperoni
+:Pepperoni rdf:type owl:NamedIndividual ,
+                    :Suine .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/PepperoniPizza
+:PepperoniPizza rdf:type owl:NamedIndividual ;
+                :pepperoniPizzaHasIngredients :Mozzarella ,
+                                              :Pepperoni ,
+                                              :TomatoSouce .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/TomatoSouce
+:TomatoSouce rdf:type owl:NamedIndividual ,
+                      :Vegetables .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/UnnamedPizza
+:UnnamedPizza rdf:type owl:NamedIndividual ;
+              :hasIngredients :Mozzarella .
+
+
+#################################################################
+#    Annotations
+#################################################################
+
+:Chicken rdfs:comment "Chicken"@en ;
+         rdfs:label "Chicken"@en .
+
+
+:HamPizza rdfs:comment "A Pizza with ham, Tomato Souce, Mozzarella"@en ;
+          rdfs:label "HamPizza"@en .
+
+
+:PepperoniPizza rdfs:comment "A Pizza with pepperoni, Tomato Souce, Mozzarella"@en ;
+                rdfs:label "PepperoniPizza"@en .
+
+
+#################################################################
+#    General axioms
+#################################################################
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :ChickenBBQPizza
+                :HamPizza
+                :PepperoniPizza
+              )
+] .
+
+
+[ rdf:type owl:AllDifferent ;
+  owl:distinctMembers ( :Step1PanificationProcessChickenPizza
+                        :Step2PanificationProcessChickenPizza
+                        :Step3PanificationProcessChickenPizza
+                        :Step4PanificationProcessChickenPizza
+                      )
+] .
+
+
+[ rdf:type owl:AllDifferent ;
+  owl:distinctMembers ( :BBQ
+                        :Chicken
+                        :Ham
+                        :Mozzarella
+                        :Pepperoni
+                        :TomatoSouce
+                      )
+] .
+
+
+###  Generated by the OWL API (version 4.5.25.2023-02-15T19:15:49Z) https://github.com/owlcs/owlapi
