@@ -1,0 +1,15 @@
+Optional.of(http://www.semanticweb.org/federico/ontologies/2024/1/pizza)
+http://www.semanticweb.org/federico/ontologies/2024/1/pizza/ChickenBBQPizza,501.0,207.0
+http://www.semanticweb.org/federico/ontologies/2024/1/pizza/StepClass,16.0,76.0
+http://www.w3.org/2002/07/owl#Thing,567.0,16.0
+http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#Collection,162.0,76.0
+http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Pizzeria,309.0,76.0
+http://www.ontologydesignpatterns.org/cp/owl/bag.owl#Item,443.0,76.0
+http://www.semanticweb.org/federico/ontologies/2024/1/pizza/PepperoniPizza,693.0,207.0
+http://www.semanticweb.org/federico/ontologies/2024/1/pizza/HamPizza,871.0,207.0
+http://www.semanticweb.org/federico/ontologies/2024/1/pizza/PizzaWithIngredients,690.0,136.0
+http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Intolerances,558.0,76.0
+http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Pizza,723.0,76.0
+http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Ingredients,841.0,76.0
+http://www.semanticweb.org/federico/ontologies/2024/1/pizza/PizzaType,996.0,76.0
+https://w3id.org/MON/person.owl#Person,1143.0,76.0
