@@ -202,7 +202,24 @@
 #    Data properties
 #################################################################
 
-###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza#hasPrice
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza#hasName
+:hasName rdf:type owl:DatatypeProperty ;
+         rdfs:subPropertyOf owl:topDataProperty ;
+         rdfs:domain :Pizzeria ;
+         rdfs:range xsd:string ;
+         rdfs:comment "The name of the pizzeria"@en ;
+         rdfs:label "hasName"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza#isLactoseFree
+:isLactoseFree rdf:type owl:DatatypeProperty ;
+               rdfs:domain :Pizza ;
+               rdfs:range xsd:boolean ;
+               rdfs:comment "The value is true if the pizza is lactose free"@en ;
+               rdfs:label "isLactoseFree"@en .
+
+
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/hasPrice
 :hasPrice rdf:type owl:DatatypeProperty ;
           rdfs:subPropertyOf owl:topDataProperty ;
           rdfs:domain :Pizza ;
@@ -515,6 +532,7 @@ deseases:K90.0 rdf:type owl:Class ;
                                                       :TomatoSouce ;
                        :hasPanificationProcess :PanificationProcessChickenPizza ;
                        :hasType :Sliced ;
+                       :isLactoseFree "false"^^xsd:boolean ;
                        :hasPrice 12 ;
                        :isGlutenFree "true"^^xsd:boolean ;
                        rdfs:comment "A Sliced pizza with chicken and BBQ"@en ;
@@ -633,6 +651,7 @@ deseases:K90.0 rdf:type owl:Class ;
                       :Pizzeria ;
              :hasEmployee :Luca ;
              :makes :ChickenBBQPizzaSliced ;
+             :hasName "Mario Pizzas" ;
              rdfs:comment "A Pizzeria"@en ;
              rdfs:label "MarioPizzas"@en .
 
@@ -698,6 +717,7 @@ deseases:K90.0 rdf:type owl:Class ;
                           :pepperoniPizzaHasIngredients :Mozzarella ,
                                                         :Pepperoni ,
                                                         :TomatoSouce ;
+                          :isLactoseFree "false"^^xsd:boolean ;
                           :hasPrice 10 ;
                           :isGlutenFree "false"^^xsd:boolean ;
                           rdfs:comment "A Napoletana Pepperoni Pizza"@en ;
@@ -708,6 +728,7 @@ deseases:K90.0 rdf:type owl:Class ;
 :PizzeriaDaCiro rdf:type owl:NamedIndividual ,
                          :Pizzeria ;
                 :makes :PepperoniPizzaNapoletana ;
+                :hasName "Pizzeria Da Ciro" ;
                 rdfs:comment "A Pizzeria"@en ;
                 rdfs:label "PizzeriaDaCiro"@en .
 
