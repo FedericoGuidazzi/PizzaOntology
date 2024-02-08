@@ -45,9 +45,21 @@
 <http://purl.org/vocab/vann/preferredNamespaceUri> rdf:type owl:AnnotationProperty .
 
 
+###  http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled
+<http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> rdf:type owl:AnnotationProperty .
+
+
 #################################################################
 #    Object Properties
 #################################################################
+
+###  http://www.ontologydesignpatterns.org/cp/owl/list.owl#hasFirstItem
+<http://www.ontologydesignpatterns.org/cp/owl/list.owl#hasFirstItem> rdfs:range <http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem> .
+
+
+###  http://www.ontologydesignpatterns.org/cp/owl/list.owl#hasLastItem
+<http://www.ontologydesignpatterns.org/cp/owl/list.owl#hasLastItem> rdfs:range <http://www.ontologydesignpatterns.org/cp/owl/list.owl#ListItem> .
+
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/chickenBBQPizzaHasIngredients
 :chickenBBQPizzaHasIngredients rdf:type owl:ObjectProperty ;
@@ -236,6 +248,15 @@
                rdfs:label "isLactoseFree"@en .
 
 
+###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/isPizzaVegetarian
+:isPizzaVegetarian rdf:type owl:DatatypeProperty ,
+                            owl:FunctionalProperty ;
+                   rdfs:domain :Pizza ;
+                   rdfs:range xsd:boolean ;
+                   rdfs:comment "The prorpriety that links a pizza with a boolean that indicates if a pizza is vegetarian"@en ;
+                   rdfs:label "isPizzaVegetarian"@en .
+
+
 ###  https://w3id.org/MON/person.owl#birthDate
 <https://w3id.org/MON/person.owl#birthDate> rdf:type owl:DatatypeProperty ;
                                             rdfs:subPropertyOf owl:topDataProperty ;
@@ -285,7 +306,21 @@ deseases:K90.0 rdf:type owl:Class ;
                                                       ) ;
                                    rdf:type owl:Class
                                  ] ;
-             rdfs:subClassOf :Pizzeria ;
+             rdfs:subClassOf :Pizzeria ,
+                             [ owl:intersectionOf ( :Pizzeria
+                                                    [ rdf:type owl:Restriction ;
+                                                      owl:onProperty :hasEmployee ;
+                                                      owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
+                                                      owl:onClass :PizzaMaker
+                                                    ]
+                                                  ) ;
+                               rdf:type owl:Class
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasEmployee ;
+                               owl:minQualifiedCardinality "3"^^xsd:nonNegativeInteger ;
+                               owl:onClass :PizzaMaker
+                             ] ;
              owl:disjointWith :SmallPizzeria ;
              rdfs:comment "A Pizzeria with many Employees"@en ;
              rdfs:label "BigPizzeria"@en .
@@ -300,7 +335,8 @@ deseases:K90.0 rdf:type owl:Class ;
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Chicken
 :Chicken rdf:type owl:Class ;
-         rdfs:subClassOf :Meat .
+         rdfs:subClassOf :Meat ;
+         owl:disjointWith :Suine .
 
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/ChickenBBQPizza
@@ -462,7 +498,30 @@ deseases:K90.0 rdf:type owl:Class ;
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/SmallPizzeria
 :SmallPizzeria rdf:type owl:Class ;
-               rdfs:subClassOf :Pizzeria ;
+               owl:equivalentClass [ owl:intersectionOf ( :Pizzeria
+                                                          [ rdf:type owl:Restriction ;
+                                                            owl:onProperty :hasEmployee ;
+                                                            owl:maxQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                                                            owl:onClass :PizzaMaker
+                                                          ]
+                                                        ) ;
+                                     rdf:type owl:Class
+                                   ] ;
+               rdfs:subClassOf :Pizzeria ,
+                               [ owl:intersectionOf ( :Pizzeria
+                                                      [ rdf:type owl:Restriction ;
+                                                        owl:onProperty :hasEmployee ;
+                                                        owl:maxQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                                                        owl:onClass :PizzaMaker
+                                                      ]
+                                                    ) ;
+                                 rdf:type owl:Class
+                               ] ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty :hasEmployee ;
+                                 owl:maxQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                                 owl:onClass :PizzaMaker
+                               ] ;
                rdfs:comment "A pizzeria with at max 2 PizzaMakers"@en ;
                rdfs:label "SmallPizzeria"@en .
 
@@ -528,34 +587,53 @@ deseases:K90.0 rdf:type owl:Class ;
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/BBQ
 :BBQ rdf:type owl:NamedIndividual ,
-              :Ingredients ;
+              :Ingredients ,
+              [ rdf:type owl:Class ;
+                owl:oneOf ( :BBQ
+                            :Chicken
+                            :Mozzarella
+                            :TomatoSouce
+                          )
+              ] ;
+     :isInPizza :ChickenBBQPizzaSliced ;
      rdfs:comment "An ingredient"@en ;
      rdfs:label "BBQ"@en .
 
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Celiac
 :Celiac rdf:type owl:NamedIndividual ,
-                 :CeliacDisease ;
+                 deseases:K90.0 ,
+                 :CeliacDisease ,
+                 :Intolerances ;
         rdfs:comment "A disease"@en ;
         rdfs:label "Celiac"@en .
 
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Chicken
 :Chicken rdf:type owl:NamedIndividual ,
-                  :Chicken .
+                  :Chicken ,
+                  :Ingredients ,
+                  :Meat ;
+         :isInPizza :ChickenBBQPizzaSliced .
 
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/ChickenBBQPizzaSliced
-:ChickenBBQPizzaSliced rdf:type owl:NamedIndividual ;
+:ChickenBBQPizzaSliced rdf:type owl:NamedIndividual ,
+                                :PizzaExpensive ;
                        :chickenBBQPizzaHasIngredients :BBQ ,
                                                       :Chicken ,
                                                       :Mozzarella ,
                                                       :TomatoSouce ;
+                       :hasIngredients :BBQ ,
+                                       :Chicken ,
+                                       :Mozzarella ,
+                                       :TomatoSouce ;
                        :hasPanificationProcess :PanificationProcessChickenPizza ;
                        :hasType :Sliced ;
                        :hasPrice 12 ;
                        :isGlutenFree "true"^^xsd:boolean ;
                        :isLactoseFree "false"^^xsd:boolean ;
+                       :isPizzaVegetarian "false"^^xsd:boolean ;
                        rdfs:comment "A Sliced pizza with chicken and BBQ"@en ;
                        rdfs:label "ChickenBBQPizzaSliced"@en .
 
@@ -569,21 +647,24 @@ deseases:K90.0 rdf:type owl:Class ;
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/CookingProcessPepperoniPizza
 :CookingProcessPepperoniPizza rdf:type owl:NamedIndividual ,
-                                       :CookingProcess ;
+                                       :CookingProcess ,
+                                       :StepClass ;
                               rdfs:comment "Cooking process for Pepperoni pizza"@en ;
                               rdfs:label "CookingProcessPepperoniPizza"@en .
 
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/FermentationChickenPizza
 :FermentationChickenPizza rdf:type owl:NamedIndividual ,
-                                   :Fermentation ;
+                                   :Fermentation ,
+                                   :StepClass ;
                           rdfs:comment "Fermentation process for chicken pizza"@en ;
                           rdfs:label "FermentationChickenPizza"@en .
 
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/FermentationPepperoniPizza
 :FermentationPepperoniPizza rdf:type owl:NamedIndividual ,
-                                     :Fermentation ;
+                                     :Fermentation ,
+                                     :StepClass ;
                             rdfs:comment "Fermentation process for pepperoni pizza"@en ;
                             rdfs:label "FermentationPepperoniPizza"@en .
 
@@ -601,7 +682,11 @@ deseases:K90.0 rdf:type owl:Class ;
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Francesco
 :Francesco rdf:type owl:NamedIndividual ,
-                    :PizzaMaker ;
+                    :PizzaMaker ,
+                    [ rdf:type owl:Restriction ;
+                      owl:onProperty :works ;
+                      owl:someValuesFrom :Pizzeria
+                    ] ;
            :works :PizzeriaDaCiro ;
            <https://w3id.org/MON/person.owl#birthDate> "2000-01-01T00:00:00"^^xsd:dateTime ;
            <https://w3id.org/MON/person.owl#firstName> "Francesco" ;
@@ -611,7 +696,11 @@ deseases:K90.0 rdf:type owl:Class ;
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Giovanni
 :Giovanni rdf:type owl:NamedIndividual ,
-                   :PizzaMaker ;
+                   :PizzaMaker ,
+                   [ rdf:type owl:Restriction ;
+                     owl:onProperty :works ;
+                     owl:someValuesFrom :Pizzeria
+                   ] ;
           :works :PizzeriaDaCiro ;
           <https://w3id.org/MON/person.owl#birthDate> "2000-01-01T00:00:00"^^xsd:dateTime ;
           <https://w3id.org/MON/person.owl#firstName> "Giovanni" ;
@@ -621,35 +710,53 @@ deseases:K90.0 rdf:type owl:Class ;
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Ham
 :Ham rdf:type owl:NamedIndividual ,
+              :Ingredients ,
+              :Meat ,
               :Suine ;
+     :isInPizza :HamPizza ;
      rdfs:comment "ham"@en ;
      rdfs:label "Ham"@en .
 
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/HamPizza
-:HamPizza rdf:type owl:NamedIndividual ;
+:HamPizza rdf:type owl:NamedIndividual ,
+                   [ rdf:type owl:Restriction ;
+                     owl:onProperty :hasIngredients ;
+                     owl:someValuesFrom :Ingredients
+                   ] ;
           :hamPizzaHasIngredients :Ham ,
                                   :Mozzarella ,
-                                  :TomatoSouce .
+                                  :TomatoSouce ;
+          :hasIngredients :Ham ,
+                          :Mozzarella ,
+                          :TomatoSouce ;
+          :isLactoseFree "false"^^xsd:boolean ;
+          :isPizzaVegetarian "false"^^xsd:boolean .
 
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/KneadingProcessChickenPizza
 :KneadingProcessChickenPizza rdf:type owl:NamedIndividual ,
-                                      :KneadingPhase ;
+                                      :KneadingPhase ,
+                                      :StepClass ;
                              rdfs:comment "The kneading process for chicken pizza"@en ;
                              rdfs:label "KneadingProcessChickenPizza"@en .
 
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/KneadingProcessPepperoniPizza
 :KneadingProcessPepperoniPizza rdf:type owl:NamedIndividual ,
-                                        :KneadingPhase ;
+                                        :KneadingPhase ,
+                                        :StepClass ;
                                rdfs:comment "Kneading process for pepperoni pizza"@en ;
                                rdfs:label "KneadingProcessPepperoniPizza"@en .
 
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Lorenzo
 :Lorenzo rdf:type owl:NamedIndividual ,
-                  :PizzaMaker ;
+                  :PizzaMaker ,
+                  [ rdf:type owl:Restriction ;
+                    owl:onProperty :works ;
+                    owl:someValuesFrom :Pizzeria
+                  ] ;
          :works :PizzeriaDaCiro ;
          <https://w3id.org/MON/person.owl#birthDate> "2000-01-01T00:00:00"^^xsd:dateTime ;
          <https://w3id.org/MON/person.owl#firstName> "Lorenzo" ;
@@ -659,7 +766,11 @@ deseases:K90.0 rdf:type owl:Class ;
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Luca
 :Luca rdf:type owl:NamedIndividual ,
-               <https://w3id.org/MON/person.owl#Person> ;
+               :PizzaMaker ,
+               [ rdf:type owl:Restriction ;
+                 owl:onProperty :works ;
+                 owl:someValuesFrom :Pizzeria
+               ] ;
       :works :MarioPizzas ;
       <https://w3id.org/MON/person.owl#birthDate> "2000-01-01T00:00:00"^^xsd:dateTime ;
       <https://w3id.org/MON/person.owl#firstName> "Luca" ;
@@ -669,7 +780,22 @@ deseases:K90.0 rdf:type owl:Class ;
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/MarioPizzas
 :MarioPizzas rdf:type owl:NamedIndividual ,
-                      :Pizzeria ;
+                      :Pizzeria ,
+                      :SmallPizzeria ,
+                      [ owl:intersectionOf ( :Pizzeria
+                                             [ rdf:type owl:Restriction ;
+                                               owl:onProperty :hasEmployee ;
+                                               owl:maxQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                                               owl:onClass :PizzaMaker
+                                             ]
+                                           ) ;
+                        rdf:type owl:Class
+                      ] ,
+                      [ rdf:type owl:Restriction ;
+                        owl:onProperty :hasEmployee ;
+                        owl:maxQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                        owl:onClass :PizzaMaker
+                      ] ;
              :hasEmployee :Luca ;
              :makes :ChickenBBQPizzaSliced ;
              :hasName "Mario Pizzas" ;
@@ -679,7 +805,12 @@ deseases:K90.0 rdf:type owl:Class ;
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Mozzarella
 :Mozzarella rdf:type owl:NamedIndividual ,
-                     :DairyProducts ;
+                     :DairyProducts ,
+                     :Ingredients ;
+            :isInPizza :ChickenBBQPizzaSliced ,
+                       :HamPizza ,
+                       :PepperoniPizza ,
+                       :PepperoniPizzaNapoletana ;
             rdfs:comment "Mozzarella"@en ;
             rdfs:label "Mozzarella"@en .
 
@@ -698,6 +829,10 @@ deseases:K90.0 rdf:type owl:Class ;
                                                                                                 :Step2PanificationProcessChickenPizza ,
                                                                                                 :Step3PanificationProcessChickenPizza ,
                                                                                                 :Step4PanificationProcessChickenPizza ;
+                                 <http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#hasMember> :Step1PanificationProcessChickenPizza ,
+                                                                                                               :Step2PanificationProcessChickenPizza ,
+                                                                                                               :Step3PanificationProcessChickenPizza ,
+                                                                                                               :Step4PanificationProcessChickenPizza ;
                                  <http://www.ontologydesignpatterns.org/cp/owl/list.owl#hasFirstItem> :Step1PanificationProcessChickenPizza ;
                                  <http://www.ontologydesignpatterns.org/cp/owl/list.owl#hasLastItem> :Step4PanificationProcessChickenPizza ;
                                  rdfs:comment "The Panification process for chicken pizza"@en ;
@@ -711,6 +846,10 @@ deseases:K90.0 rdf:type owl:Class ;
                                                                                                   :Step2PanificationProcessPepperoniPizza ,
                                                                                                   :Step3PanificationProcessPepperoniPizza ,
                                                                                                   :Step4PanificationProcessPepperoniPizza ;
+                                   <http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#hasMember> :Step1PanificationProcessPepperoniPizza ,
+                                                                                                                 :Step2PanificationProcessPepperoniPizza ,
+                                                                                                                 :Step3PanificationProcessPepperoniPizza ,
+                                                                                                                 :Step4PanificationProcessPepperoniPizza ;
                                    <http://www.ontologydesignpatterns.org/cp/owl/list.owl#hasFirstItem> :Step1PanificationProcessPepperoniPizza ;
                                    <http://www.ontologydesignpatterns.org/cp/owl/list.owl#hasLastItem> :Step4PanificationProcessPepperoniPizza ;
                                    rdfs:comment "Panification process for pepperoni pizza"@en ;
@@ -719,20 +858,41 @@ deseases:K90.0 rdf:type owl:Class ;
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/Pepperoni
 :Pepperoni rdf:type owl:NamedIndividual ,
+                    :Ingredients ,
+                    :Meat ,
                     :Suine ;
+           :isInPizza :PepperoniPizza ,
+                      :PepperoniPizzaNapoletana ;
            rdfs:comment "Pepperoni"@en ;
            rdfs:label "Pepperoni"@en .
 
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/PepperoniPizza
-:PepperoniPizza rdf:type owl:NamedIndividual ;
+:PepperoniPizza rdf:type owl:NamedIndividual ,
+                         [ rdf:type owl:Restriction ;
+                           owl:onProperty :hasIngredients ;
+                           owl:someValuesFrom :Ingredients
+                         ] ;
+                :hasIngredients :Mozzarella ,
+                                :Pepperoni ,
+                                :TomatoSouce ;
                 :pepperoniPizzaHasIngredients :Mozzarella ,
                                               :Pepperoni ,
-                                              :TomatoSouce .
+                                              :TomatoSouce ;
+                :isLactoseFree "false"^^xsd:boolean ;
+                :isPizzaVegetarian "false"^^xsd:boolean .
 
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/PepperoniPizzaNapoletana
-:PepperoniPizzaNapoletana rdf:type owl:NamedIndividual ;
+:PepperoniPizzaNapoletana rdf:type owl:NamedIndividual ,
+                                   :PizzaCheap ,
+                                   [ rdf:type owl:Restriction ;
+                                     owl:onProperty :hasIngredients ;
+                                     owl:someValuesFrom :Ingredients
+                                   ] ;
+                          :hasIngredients :Mozzarella ,
+                                          :Pepperoni ,
+                                          :TomatoSouce ;
                           :hasPanificationProcess :PanificationProcessPepperoniPizza ;
                           :hasType :Napoletana ;
                           :pepperoniPizzaHasIngredients :Mozzarella ,
@@ -741,6 +901,7 @@ deseases:K90.0 rdf:type owl:Class ;
                           :hasPrice 10 ;
                           :isGlutenFree "false"^^xsd:boolean ;
                           :isLactoseFree "false"^^xsd:boolean ;
+                          :isPizzaVegetarian "false"^^xsd:boolean ;
                           rdfs:comment "A Napoletana Pepperoni Pizza"@en ;
                           rdfs:label "PepperoniPizzaNapoletana"@en .
 
@@ -748,6 +909,9 @@ deseases:K90.0 rdf:type owl:Class ;
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/PizzeriaDaCiro
 :PizzeriaDaCiro rdf:type owl:NamedIndividual ,
                          :Pizzeria ;
+                :hasEmployee :Francesco ,
+                             :Giovanni ,
+                             :Lorenzo ;
                 :makes :PepperoniPizzaNapoletana ;
                 :hasName "Pizzeria Da Ciro" ;
                 rdfs:comment "A Pizzeria"@en ;
@@ -756,14 +920,16 @@ deseases:K90.0 rdf:type owl:Class ;
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/ShapingChickenPizza
 :ShapingChickenPizza rdf:type owl:NamedIndividual ,
-                              :Shaping ;
+                              :Shaping ,
+                              :StepClass ;
                      rdfs:comment "Shaping Process for chicken bbq pizza"@en ;
                      rdfs:label "ShapingChickenPizza"@en .
 
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/ShapingPepperoniPizza
 :ShapingPepperoniPizza rdf:type owl:NamedIndividual ,
-                                :Shaping ;
+                                :Shaping ,
+                                :StepClass ;
                        rdfs:comment "Shaping process for Pepperoni pizza"@en ;
                        rdfs:label "ShapingPepperoniPizza"@en .
 
@@ -779,7 +945,13 @@ deseases:K90.0 rdf:type owl:Class ;
 :Step1PanificationProcessChickenPizza rdf:type owl:NamedIndividual ,
                                                :Step ;
                                       <http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemContent> :KneadingProcessChickenPizza ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemOf> :PanificationProcessChickenPizza ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf> :PanificationProcessChickenPizza ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/list.owl#firstItemOf> :PanificationProcessChickenPizza ;
                                       <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#directlyPrecedes> :Step2PanificationProcessChickenPizza ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#precedes> :Step2PanificationProcessChickenPizza ,
+                                                                                                           :Step3PanificationProcessChickenPizza ,
+                                                                                                           :Step4PanificationProcessChickenPizza ;
                                       rdfs:comment "1 step of the panification process for chicken pizza"@en ;
                                       rdfs:label "Step1PanificationProcessChickenPizza"@en .
 
@@ -788,7 +960,13 @@ deseases:K90.0 rdf:type owl:Class ;
 :Step1PanificationProcessPepperoniPizza rdf:type owl:NamedIndividual ,
                                                  :Step ;
                                         <http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemContent> :KneadingProcessPepperoniPizza ;
+                                        <http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemOf> :PanificationProcessPepperoniPizza ;
+                                        <http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf> :PanificationProcessPepperoniPizza ;
+                                        <http://www.ontologydesignpatterns.org/cp/owl/list.owl#firstItemOf> :PanificationProcessPepperoniPizza ;
                                         <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#directlyPrecedes> :Step2PanificationProcessPepperoniPizza ;
+                                        <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#precedes> :Step2PanificationProcessPepperoniPizza ,
+                                                                                                             :Step3PanificationProcessPepperoniPizza ,
+                                                                                                             :Step4PanificationProcessPepperoniPizza ;
                                         rdfs:comment "1 step of the panification process for pepperoni pizza"@en ;
                                         rdfs:label "Step1PanificationProcessPepperoniPizza"@en .
 
@@ -797,6 +975,13 @@ deseases:K90.0 rdf:type owl:Class ;
 :Step2PanificationProcessChickenPizza rdf:type owl:NamedIndividual ,
                                                :Step ;
                                       <http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemContent> :ShapingChickenPizza ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemOf> :PanificationProcessChickenPizza ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf> :PanificationProcessChickenPizza ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#directlyFollows> :Step1PanificationProcessChickenPizza ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#directlyPrecedes> :Step3PanificationProcessChickenPizza ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#follows> :Step1PanificationProcessChickenPizza ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#precedes> :Step3PanificationProcessChickenPizza ,
+                                                                                                           :Step4PanificationProcessChickenPizza ;
                                       rdfs:comment "2 step of the panification process for chicken pizza"@en ;
                                       rdfs:label "Step2PanificationProcessChickenPizza"@en .
 
@@ -805,6 +990,13 @@ deseases:K90.0 rdf:type owl:Class ;
 :Step2PanificationProcessPepperoniPizza rdf:type owl:NamedIndividual ,
                                                  :Step ;
                                         <http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemContent> :ShapingPepperoniPizza ;
+                                        <http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemOf> :PanificationProcessPepperoniPizza ;
+                                        <http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf> :PanificationProcessPepperoniPizza ;
+                                        <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#directlyFollows> :Step1PanificationProcessPepperoniPizza ;
+                                        <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#directlyPrecedes> :Step3PanificationProcessPepperoniPizza ;
+                                        <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#follows> :Step1PanificationProcessPepperoniPizza ;
+                                        <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#precedes> :Step3PanificationProcessPepperoniPizza ,
+                                                                                                             :Step4PanificationProcessPepperoniPizza ;
                                         rdfs:comment "2 step of the panification process for pepperoni pizza"@en ;
                                         rdfs:label "Step2PanificationProcessPepperoniPizza"@en .
 
@@ -813,7 +1005,13 @@ deseases:K90.0 rdf:type owl:Class ;
 :Step3PanificationProcessChickenPizza rdf:type owl:NamedIndividual ,
                                                :Step ;
                                       <http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemContent> :FermentationChickenPizza ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemOf> :PanificationProcessChickenPizza ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf> :PanificationProcessChickenPizza ;
                                       <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#directlyFollows> :Step2PanificationProcessChickenPizza ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#directlyPrecedes> :Step4PanificationProcessChickenPizza ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#follows> :Step1PanificationProcessChickenPizza ,
+                                                                                                          :Step2PanificationProcessChickenPizza ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#precedes> :Step4PanificationProcessChickenPizza ;
                                       rdfs:comment "3 step of the panification process for chicken pizza"@en ;
                                       rdfs:label "Step3PanificationProcessChickenPizza"@en .
 
@@ -822,7 +1020,13 @@ deseases:K90.0 rdf:type owl:Class ;
 :Step3PanificationProcessPepperoniPizza rdf:type owl:NamedIndividual ,
                                                  :Step ;
                                         <http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemContent> :FermentationPepperoniPizza ;
+                                        <http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemOf> :PanificationProcessPepperoniPizza ;
+                                        <http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf> :PanificationProcessPepperoniPizza ;
                                         <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#directlyFollows> :Step2PanificationProcessPepperoniPizza ;
+                                        <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#directlyPrecedes> :Step4PanificationProcessPepperoniPizza ;
+                                        <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#follows> :Step1PanificationProcessPepperoniPizza ,
+                                                                                                            :Step2PanificationProcessPepperoniPizza ;
+                                        <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#precedes> :Step4PanificationProcessPepperoniPizza ;
                                         rdfs:comment "3 step of the panification process for pepperoni pizza"@en ;
                                         rdfs:label "Step3PanificationProcessPepperoniPizza"@en .
 
@@ -831,7 +1035,13 @@ deseases:K90.0 rdf:type owl:Class ;
 :Step4PanificationProcessChickenPizza rdf:type owl:NamedIndividual ,
                                                :Step ;
                                       <http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemContent> :CookingProcessChickenPizza ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemOf> :PanificationProcessChickenPizza ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf> :PanificationProcessChickenPizza ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/list.owl#lastItemOf> :PanificationProcessChickenPizza ;
                                       <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#directlyFollows> :Step3PanificationProcessChickenPizza ;
+                                      <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#follows> :Step1PanificationProcessChickenPizza ,
+                                                                                                          :Step2PanificationProcessChickenPizza ,
+                                                                                                          :Step3PanificationProcessChickenPizza ;
                                       rdfs:comment "4 step of the panification process for chicken pizza"@en ;
                                       rdfs:label "Step4PanificationProcessChickenPizza"@en .
 
@@ -840,14 +1050,25 @@ deseases:K90.0 rdf:type owl:Class ;
 :Step4PanificationProcessPepperoniPizza rdf:type owl:NamedIndividual ,
                                                  :Step ;
                                         <http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemContent> :CookingProcessPepperoniPizza ;
+                                        <http://www.ontologydesignpatterns.org/cp/owl/bag.owl#itemOf> :PanificationProcessPepperoniPizza ;
+                                        <http://www.ontologydesignpatterns.org/cp/owl/collectionentity.owl#isMemberOf> :PanificationProcessPepperoniPizza ;
+                                        <http://www.ontologydesignpatterns.org/cp/owl/list.owl#lastItemOf> :PanificationProcessPepperoniPizza ;
                                         <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#directlyFollows> :Step3PanificationProcessPepperoniPizza ;
+                                        <http://www.ontologydesignpatterns.org/cp/owl/sequence.owl#follows> :Step1PanificationProcessPepperoniPizza ,
+                                                                                                            :Step2PanificationProcessPepperoniPizza ,
+                                                                                                            :Step3PanificationProcessPepperoniPizza ;
                                         rdfs:comment "4 step of the panification process for pepperoni pizza"@en ;
                                         rdfs:label "Step4PanificationProcessPepperoniPizza"@en .
 
 
 ###  http://www.semanticweb.org/federico/ontologies/2024/1/pizza/TomatoSouce
 :TomatoSouce rdf:type owl:NamedIndividual ,
+                      :Ingredients ,
                       :Vegetables ;
+             :isInPizza :ChickenBBQPizzaSliced ,
+                        :HamPizza ,
+                        :PepperoniPizza ,
+                        :PepperoniPizzaNapoletana ;
              rdfs:comment "TomatoSouce"@en ;
              rdfs:label "TomatoSouce"@en .
 
@@ -872,10 +1093,40 @@ deseases:K90.0 rdf:type owl:Class ;
 #    General axioms
 #################################################################
 
+[ rdf:type owl:Restriction ;
+  owl:onProperty :hamPizzaHasIngredients ;
+  owl:qualifiedCardinality "3"^^xsd:nonNegativeInteger ;
+  owl:onClass :Ingredients ;
+  rdfs:subClassOf [ rdf:type owl:Restriction ;
+                    owl:onProperty :hasIngredients ;
+                    owl:someValuesFrom :Ingredients
+                  ]
+] .
+
+
+[ rdf:type owl:Restriction ;
+  owl:onProperty :pepperoniPizzaHasIngredients ;
+  owl:qualifiedCardinality "3"^^xsd:nonNegativeInteger ;
+  owl:onClass :Ingredients ;
+  rdfs:subClassOf [ rdf:type owl:Restriction ;
+                    owl:onProperty :hasIngredients ;
+                    owl:someValuesFrom :Ingredients
+                  ]
+] .
+
+
 [ rdf:type owl:AllDisjointClasses ;
   owl:members ( :ChickenBBQPizza
                 :HamPizza
                 :PepperoniPizza
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :DairyProducts
+                :Meat
+                :Vegetables
               )
 ] .
 
@@ -895,6 +1146,7 @@ deseases:K90.0 rdf:type owl:Class ;
   owl:distinctMembers ( :Francesco
                         :Giovanni
                         :Lorenzo
+                        :Luca
                       )
 ] .
 
@@ -916,5 +1168,194 @@ deseases:K90.0 rdf:type owl:Class ;
                       )
 ] .
 
+
+#################################################################
+#    Rules
+#################################################################
+
+:x rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+:y rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+:n rdf:type <http://www.w3.org/2003/11/swrl#Variable> .
+
+[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
+   rdfs:comment "Set the flag isPizzaVegetarian is there is no meat in the ingredients" ;
+   rdfs:label "Pizza_Vegetarian" ;
+   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
+   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#classPredicate> :Pizza ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> :x
+                                                     ] ;
+                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> :hasIngredients ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument2> :y
+                                                                ] ;
+                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                                             <http://www.w3.org/2003/11/swrl#classPredicate> :Meat ;
+                                                                             <http://www.w3.org/2003/11/swrl#argument1> :y
+                                                                           ] ;
+                                                                 rdf:rest rdf:nil
+                                                               ]
+                                                    ]
+                                         ] ;
+   <http://www.w3.org/2003/11/swrl#head> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#DatavaluedPropertyAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> :isPizzaVegetarian ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> :x ;
+                                                       <http://www.w3.org/2003/11/swrl#argument2> "false"^^xsd:boolean
+                                                     ] ;
+                                           rdf:rest rdf:nil
+                                         ]
+ ] .
+
+[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
+   rdfs:comment "A rule to insert pizzas that cost more than 11 into the expensivePizza class" ;
+   rdfs:label "Pizza_Expensive" ;
+   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
+   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#classPredicate> :Pizza ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> :x
+                                                     ] ;
+                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#DatavaluedPropertyAtom> ;
+                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> :hasPrice ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument2> :n
+                                                                ] ;
+                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#BuiltinAtom> ;
+                                                                             <http://www.w3.org/2003/11/swrl#builtin> <http://www.w3.org/2003/11/swrlb#greaterThan> ;
+                                                                             <http://www.w3.org/2003/11/swrl#arguments> [ rdf:type rdf:List ;
+                                                                                                                          rdf:first :n ;
+                                                                                                                          rdf:rest [ rdf:type rdf:List ;
+                                                                                                                                     rdf:first 11 ;
+                                                                                                                                     rdf:rest rdf:nil
+                                                                                                                                   ]
+                                                                                                                        ]
+                                                                           ] ;
+                                                                 rdf:rest rdf:nil
+                                                               ]
+                                                    ]
+                                         ] ;
+   <http://www.w3.org/2003/11/swrl#head> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#classPredicate> :PizzaExpensive ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> :x
+                                                     ] ;
+                                           rdf:rest rdf:nil
+                                         ]
+ ] .
+
+[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
+   rdfs:comment "A pizza is Cheap if it costs max 11" ;
+   rdfs:label "Pizza_Cheap" ;
+   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
+   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#classPredicate> :Pizza ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> :x
+                                                     ] ;
+                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#DatavaluedPropertyAtom> ;
+                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> :hasPrice ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument2> :n
+                                                                ] ;
+                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#BuiltinAtom> ;
+                                                                             <http://www.w3.org/2003/11/swrl#builtin> <http://www.w3.org/2003/11/swrlb#lessThanOrEqual> ;
+                                                                             <http://www.w3.org/2003/11/swrl#arguments> [ rdf:type rdf:List ;
+                                                                                                                          rdf:first :n ;
+                                                                                                                          rdf:rest [ rdf:type rdf:List ;
+                                                                                                                                     rdf:first 11 ;
+                                                                                                                                     rdf:rest rdf:nil
+                                                                                                                                   ]
+                                                                                                                        ]
+                                                                           ] ;
+                                                                 rdf:rest rdf:nil
+                                                               ]
+                                                    ]
+                                         ] ;
+   <http://www.w3.org/2003/11/swrl#head> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#classPredicate> :PizzaCheap ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> :x
+                                                     ] ;
+                                           rdf:rest rdf:nil
+                                         ]
+ ] .
+
+[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
+   rdfs:comment "If a person works in a Pizzeria it's a PizzaMaker" ;
+   rdfs:label "Person_PizzaMaker" ;
+   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
+   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#classPredicate> <https://w3id.org/MON/person.owl#Person> ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> :x
+                                                     ] ;
+                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> :works ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument2> :y
+                                                                ] ;
+                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                                             <http://www.w3.org/2003/11/swrl#classPredicate> :Pizzeria ;
+                                                                             <http://www.w3.org/2003/11/swrl#argument1> :y
+                                                                           ] ;
+                                                                 rdf:rest rdf:nil
+                                                               ]
+                                                    ]
+                                         ] ;
+   <http://www.w3.org/2003/11/swrl#head> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#classPredicate> :PizzaMaker ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> :x
+                                                     ] ;
+                                           rdf:rest rdf:nil
+                                         ]
+ ] .
+
+[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
+   rdfs:comment "A rule to set isLactoseFree flag to false if there are dairy products in the ingredients" ;
+   rdfs:label "LactoseFree" ;
+   rdf:type <http://www.w3.org/2003/11/swrl#Imp> ;
+   <http://www.w3.org/2003/11/swrl#body> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#classPredicate> :Pizza ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> :x
+                                                     ] ;
+                                           rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                      rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#IndividualPropertyAtom> ;
+                                                                  <http://www.w3.org/2003/11/swrl#propertyPredicate> :hasIngredients ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument1> :x ;
+                                                                  <http://www.w3.org/2003/11/swrl#argument2> :y
+                                                                ] ;
+                                                      rdf:rest [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                                                 rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#ClassAtom> ;
+                                                                             <http://www.w3.org/2003/11/swrl#classPredicate> :DairyProducts ;
+                                                                             <http://www.w3.org/2003/11/swrl#argument1> :y
+                                                                           ] ;
+                                                                 rdf:rest rdf:nil
+                                                               ]
+                                                    ]
+                                         ] ;
+   <http://www.w3.org/2003/11/swrl#head> [ rdf:type <http://www.w3.org/2003/11/swrl#AtomList> ;
+                                           rdf:first [ rdf:type <http://www.w3.org/2003/11/swrl#DatavaluedPropertyAtom> ;
+                                                       <http://www.w3.org/2003/11/swrl#propertyPredicate> :isLactoseFree ;
+                                                       <http://www.w3.org/2003/11/swrl#argument1> :x ;
+                                                       <http://www.w3.org/2003/11/swrl#argument2> "false"^^xsd:boolean
+                                                     ] ;
+                                           rdf:rest rdf:nil
+                                         ]
+ ] .
 
 ###  Generated by the OWL API (version 4.5.25.2023-02-15T19:15:49Z) https://github.com/owlcs/owlapi
